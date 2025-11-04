@@ -1,0 +1,6 @@
+google-cloud-bigquery==3.38.0
+pandas==2.1.4
+gcsfs==2025.9.0
+db-dtypes==1.4.3
+
+
