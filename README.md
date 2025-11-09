@@ -21,11 +21,11 @@ The objective of this project was to **apply industry-standard data engineering 
 The pipeline follows the **ETL pattern and is fully orchestrated in Airflow:**
 
 1. **Scraper Job (Cloud Run + Docker)** → collects raw job listings (HTML/JSON)
-2. **Enricher Job (Cloud Run + Docker)** → parses, enriches, and standardizes data
+2. **Enricher Job (Cloud Run + Docker)** → iterates through listings, skipes offers already present in a dw, scrapes details from each listing, parses and enriches data
 3. **Data Lake (GCS)** → stores raw and enriched Parquet data
-4. **Spark Cleaning (Dataproc)** → performs transformations, deduplication, and schema normalization
+4. **Spark Cleaning (Dataproc)** → performs transformations, creates categories, seniorities (mainly using regex) etc, normalizes normalization
 5. **Load to BigQuery (DW)** → appends daily partitions into **partitioned** table
-6. **Looker Studio Dashboard** → visualizes aggregated metrics (salary distribution, job count by region, tech stack demand)
+6. **Looker Studio Dashboard** (IN PROGRESS) → visualizes aggregated metrics (salary distribution, job count by region, tech stack demand)
 7. **Vertex AI Modeling (IN PROGRESS) → builds ML models on job features (salary prediction, classification)**
 
 All steps are orchestrated via **Cloud Composer DAG**, ensuring dependency management, retries, and idempotent runs. The deployment is automaed using **Terraform** layer in the repo.
