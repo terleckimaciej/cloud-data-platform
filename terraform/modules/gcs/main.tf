@@ -37,3 +37,10 @@ bucket = google_storage_bucket.data_lake.name
 role = "roles/storage.objectViewer"
 member = "serviceAccount:${var.dataproc_sa}"
 }
+
+
+resource "google_storage_bucket_object" "pyspark_curated_transform" {
+  name   = "pyspark_jobs/curated_transform.py"  # Final GCS path
+  bucket = google_storage_bucket.data_lake.name
+  source = "${path.module}/../../pyspark_jobs/spark-transform-job.py"  # Lokalna ścieżka w repo
+}
