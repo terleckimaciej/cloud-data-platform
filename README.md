@@ -60,9 +60,6 @@ Temporal versioning – data stored as daily Parquet partitions in GCS for deter
 
 Final outputs are stored in Parquet format in the GCS Data Lake and loaded into a partitioned BigQuery Data Warehouse, powering analytical dashboards (Looker Studio) and machine-learning models (Vertex AI).
 
-Temporal versioning – data stored as daily Parquet partitions in GCS for deterministic reprocessing and reproducible historical snapshots.
-
-Final outputs are stored in Parquet format in the GCS Data Lake and loaded into a partitioned BigQuery Data Warehouse, powering analytical dashboards (Looker Studio) and machine-learning models (Vertex AI).
 ---
 
 ## 📊 Final Result
