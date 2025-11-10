@@ -1,4 +1,4 @@
-# Pracuj.pl Data Pipeline
+<img width="1280" height="720" alt="image" src="https://github.com/user-attachments/assets/21dda2d6-068d-48fe-bdd3-a76ef147cd65" /># Pracuj.pl Data Pipeline
 
 A fully orchestrated data engineering pipeline on **Google Cloud Platform** using **Docker, Airflow, Dataproc (Spark), BigQuery, Looker Studio, Vertex AI** and **Terraform**.
 
@@ -12,11 +12,14 @@ This project builds a complete **end-to-end data platform** that automatically s
 
 ## 🎯 Objective
 
-The objective of this project was to **apply industry-standard data engineering practices** using the most current open-source and managed frameworks within the GCP ecosystem. It aimed to consolidate the author’s skills through a **real-case scenario implementation**, demonstrate understanding of **serverless design patterns**, **modular IaC with Terraform**, and **pipeline orchestration** with Airflow — all while producing a portfolio project that showcases technical competence to potential employers.
+The objective of this project was to **apply industry-standard data engineering practices** using the most current open-source and managed frameworks within the GCP ecosystem. 
+It aimed to consolidate the author’s skills through a **real-case scenario implementation**, demonstrate understanding of **serverless design patterns**, **modular IaC with Terraform**, and **pipeline orchestration** with Airflow — all while producing a portfolio project that showcases technical competence to potential employers.
 
 ---
 
 ## 🏗️ Architecture
+
+<img width="1280" height="720" alt="image" src="https://github.com/user-attachments/assets/058c8c30-e524-41a2-9ff4-f4393ebb7434" />
 
 The pipeline follows the **ETL pattern and is fully orchestrated in Airflow:**
 
