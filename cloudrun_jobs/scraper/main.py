@@ -11,26 +11,25 @@ from fake_useragent import UserAgent
 import pyppeteer
 
 
-# === NAPRAWA BŁĘDU Chromium w Cloud Run ===
+# === FIXING Chromium ERROR in encountered in Cloud Run ===
 # Usuwamy ograniczenia sandboxa
 import pyppeteer
 
-# === NAPRAWA BŁĘDU Chromium w Cloud Run ===
 for flag in ["--no-sandbox", "--disable-dev-shm-usage"]:
     if flag in pyppeteer.launcher.DEFAULT_ARGS:
         pyppeteer.launcher.DEFAULT_ARGS.remove(flag)
 
 
 
-# --- KONFIGURACJA ---
+# --- CONFIG ---
 BASE_URL = "https://it.pracuj.pl"
 URL_TPL = "https://it.pracuj.pl/praca?pn={page}"
 MAX_PAGES = 1000
 
-# 🔹 Ścieżka docelowa w Data Lake
+# 🔹 Output path in Data Lake
 bucket_path = f"gs://pracuj-pl-data-lake/raw/job_listings_{date.today()}.parquet"
 
-# selektory HTML
+# HTML selectors
 CARD_SEL       = "div[data-test='default-offer'], div[data-test='recommended-offer']"
 TITLE_LINK_SEL = "a[data-test='link-offer-title'], a[data-test='link-offer']"
 COMPANY_SEL    = "a[data-test='link-company-profile'], [data-test='text-company-name']"
@@ -39,7 +38,7 @@ DATE_SEL       = "p[data-test='text-added']"
 
 async def fetch_page(asession, page: int):
     url = URL_TPL.format(page=page)
-    print(f"➡️  Pobieram stronę {page}: {url}")
+    print(f"➡️  Loading page {page}: {url}")
     headers = {"User-Agent": UserAgent().random}
     r = await asession.get(url, headers=headers)
     await r.html.arender(timeout=40, sleep=random.uniform(2, 5))
@@ -89,12 +88,12 @@ async def main():
                 break
             all_rows.extend(page_rows)
         except Exception as e:
-            print(f"⚠️  Błąd na stronie {page}: {e}")
+            print(f"⚠️  Error at {page}: {e}")
             continue
 
     await asession.close()
     df = pd.DataFrame(all_rows).drop_duplicates(subset=["url"]).reset_index(drop=True)
-    print(f"\n📊 Łącznie zebrano {len(df)} unikalnych ofert.")
+    print(f"\n📊 {len(df)} unique offers scraped")
     return df
 
 
@@ -102,7 +101,7 @@ def save_to_gcs(df):
     fs = gcsfs.GCSFileSystem(token="cloud")
     with fs.open(bucket_path, "wb") as f:
         df.to_parquet(f, index=False)
-    print(f"✅ Zapisano dane do: {bucket_path}")
+    print(f"✅ Data saved at: {bucket_path}")
 
 
 if __name__ == "__main__":
