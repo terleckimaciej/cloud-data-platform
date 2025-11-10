@@ -24,7 +24,7 @@ It aimed to consolidate the author’s skills through a **real-case scenario imp
 
 The pipeline follows the **ETL pattern and is fully orchestrated in Airflow:**
 
-1. **Scraper Job (Cloud Run + Docker)** → daily job that collects raw job listings (HTML/JSON), saves a parquet with ofeer links in a data lake folder "raw"
+1. **Scraper Job (Cloud Run + Docker)** → daily job that collects raw job listings (HTML/JSON), saves a parquet with offer links in a data lake folder "raw"
 2. **Enricher Job (Cloud Run + Docker)** → skipes offers already present in a data warehouse, then iterates through listings left, scrapes all the desired details from each listing page, parses and enriches data, saves it in a data lake folder "enriched"
 3. **Data Lake (GCS)** → stores raw and enriched Parquet data, organized by scrape date (daily partitions) to maintain a clear data lineage and guarantee reproducible, idempotent loads across pipeline runs
 4. **Spark Cleaning (Dataproc)** → performs large-scale data transformations and feature engineering (e.g. extracting categories, seniorities via regex) using an ephemeral Dataproc cluster. The use of Spark ensures scalability and fault-tolerant processing of large datasets, while ephemeral clusters minimize cost by provisioning compute only during job execution.
