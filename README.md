@@ -29,7 +29,7 @@ The pipeline follows the **ETL pattern and is fully orchestrated in Airflow:**
 3. **Data Lake (GCS)** → stores raw and enriched Parquet data, organized by scrape date (daily partitions) to maintain a clear data lineage and guarantee reproducible, idempotent loads across pipeline runs
 4. **Spark Cleaning (Dataproc)** → performs large-scale data transformations and feature engineering (e.g. extracting categories, seniorities via regex) using an ephemeral Dataproc cluster. The use of Spark ensures scalability and fault-tolerant processing of large datasets, while ephemeral clusters minimize cost by provisioning compute only during job execution.
 5. **Load to BigQuery (DW)** → appends daily partitions into a date-partitioned table, improving query efficiency and supporting incremental ingestion logic that prevents re-scraping or re-loading listings already present in the warehouse.
-6. **Looker Studio Dashboard** (IN PROGRESS) → visualizes aggregated metrics (salary distribution, job count by region, tech stack demand)
+6. **Looker Studio Dashboard** → visualizes aggregated metrics (salary distribution, job count by region, tech stack demand)
 7. **Vertex AI Modeling (IN PROGRESS) → builds ML models on job features (salary prediction, classification)**
 
 All steps are orchestrated via **Cloud Composer DAG**, ensuring dependency management, retries, and idempotent runs. The deployment is automaed using **Terraform** layer in the repo.
