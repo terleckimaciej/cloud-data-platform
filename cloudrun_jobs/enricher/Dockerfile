@@ -1,9 +1,9 @@
 FROM python:3.11-slim
 
-# unikamy interakcji apt
+# avoid apt interaction
 ENV DEBIAN_FRONTEND=noninteractive
 
-# instalacja Chromium i bibliotek
+# install Chromium and libraries
 RUN apt-get update && apt-get install -y \
     chromium chromium-driver \
     libatk-bridge2.0-0 libgtk-3-0 libgbm-dev libx11-xcb1 \

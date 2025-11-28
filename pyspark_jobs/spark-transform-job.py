@@ -2,7 +2,7 @@ import os
 from datetime import date, datetime
 from pyspark.sql import SparkSession, functions as F
 
-# === KONFIG ===
+# === CONFIG ===
 PROJECT_ID = "pracuj-pl-pipeline"
 BUCKET = "pracuj-pl-data-lake"
 TODAY = date.today().isoformat()
@@ -10,7 +10,7 @@ TODAY = date.today().isoformat()
 INPUT_PATH = f"gs://{BUCKET}/enriched/job_details_enriched_{TODAY}.parquet"
 OUTPUT_PATH = f"gs://{BUCKET}/curated/{TODAY}/"
 
-# === 1️⃣ Inicjalizacja Sparka ===
+# === 1️⃣ Spark Initialization ===
 spark = (
     SparkSession.builder
     .appName("Job Details Transformation Dev")
@@ -24,19 +24,19 @@ print("Spark version:", spark.version)
 print("Input path:", INPUT_PATH)
 print("Output path:", OUTPUT_PATH)
 
-# === 2️⃣ Wczytanie danych ===
+# === 2️⃣ Loading data ===
 df = spark.read.parquet(INPUT_PATH)
 
-# === 2a️⃣ Wyodrębnienie unikalnego ID oferty z URL ===
+# === 2a️⃣ Extracting unique offer ID from URL ===
 df = df.withColumn("offer_id", F.regexp_extract(F.col("url"), r",oferta,(\d+)", 1))
 
-# === 3️⃣ Czyszczenie nazw firm ===
+# === 3️⃣ Cleaning company names ===
 df = df.withColumn(
     "company_name",
     F.trim(F.regexp_replace(F.col("company_name"), "( O firmie| About the company)", ""))
 )
 
-# === 4️⃣ Mapy miesięcy PL + EN ===
+# === 4️⃣ Month maps PL + EN ===
 month_map = {
     "sty": 1, "lut": 2, "mar": 3, "kwi": 4, "maj": 5, "cze": 6,
     "lip": 7, "sie": 8, "wrz": 9, "paź": 10, "paz": 10, "lis": 11, "gru": 12,
@@ -50,7 +50,7 @@ current_year = today.year
 current_month = today.month
 
 
-# === 5️⃣ Kolumna valid_until ===
+# === 5️⃣ Column valid_until ===
 df = (
     df
     .withColumn("valid_until_clean", F.lower(F.col("valid_until_raw")))
@@ -69,7 +69,7 @@ df = (
 
 from pyspark.sql import functions as F
 
-# === Słownik miesięcy (pełne polskie nazwy) ===
+# === Dictionary of months (full Polish names) ===
 month_map_full = {
     "stycznia": 1, "lutego": 2, "marca": 3, "kwietnia": 4,
     "maja": 5, "czerwca": 6, "lipca": 7, "sierpnia": 8,
@@ -78,19 +78,19 @@ month_map_full = {
 }
 month_map_expr_full = F.create_map([F.lit(x) for x in sum(month_map_full.items(), ())])
 
-# === Poprawiony kod ===
+# === Corrected code ===
 df = (
     df
     .withColumn("date_added_clean", F.lower(F.col("date_added_raw")))
-    # dzień
+    # day
     .withColumn("day_int", F.regexp_extract("date_added_clean", r"(\d{1,2})", 1).cast("int"))
-    # miesiąc (pełna nazwa, polskie znaki i opcjonalna spacja przed)
+    # month (full name, Polish characters and optional space before)
     .withColumn("month_str", F.regexp_extract("date_added_clean", r"\d{1,2}\s+([a-zęóąśłżźćń]+)", 1))
-    # rok
+    # year
     .withColumn("year_int", F.regexp_extract("date_added_clean", r"(\d{4})", 1).cast("int"))
-    # dopasowanie do mapy
+    # mapping
     .withColumn("month_num", month_map_expr_full[F.col("month_str")])
-    # składanie poprawnej daty
+    # constructing correct date
     .withColumn(
         "date_added",
         F.to_date(
@@ -111,14 +111,14 @@ from pyspark.sql import functions as F
 
 df = (
     df
-    # --- czyszczenie tekstu ---
+    # --- cleaning text ---
     .withColumn("salary_clean", F.lower(F.col("salary_raw")))
     .withColumn("salary_clean", F.regexp_replace("salary_clean", "–", "-"))       # en dash → minus
-    .withColumn("salary_clean", F.regexp_replace("salary_clean", ",", "."))       # przecinek → kropka
+    .withColumn("salary_clean", F.regexp_replace("salary_clean", ",", "."))       # comma → dot
     .withColumn("salary_clean", F.regexp_replace("salary_clean", "zł", ""))
-    # 🔥 usuń wszystkie spacje (normalne + niełamliwe + wąskie itp.)
+    #  remove all spaces (normal + non-breaking + narrow etc.)
     .withColumn("salary_clean", F.regexp_replace("salary_clean", "[\\u00A0\\u202F\\s]+", ""))
-    # --- teraz można bezpiecznie splitować ---
+    # --- now it's safe to split ---
     .withColumn("salary_parts", F.split(F.col("salary_clean"), "-"))
 
     # --- salary_min / max / avg ---
@@ -189,23 +189,23 @@ df = (
     df
     .withColumn("contract_lower", F.lower(F.col("contract_type")))
 
-    # główny typ (priorytetowy mapping)
+    # main type (priority mapping)
     .withColumn(
         "contract_type",
         F.when(F.col("contract_lower").isNull(), "unknown")
-         # etat
+         # employment contract
          .when(F.col("contract_lower").rlike("umowa o pracę|contract of employment"), "employment")
          # b2b
          .when(F.col("contract_lower").rlike("b2b"), "b2b")
-         # zlecenie
+         # mandate contract
          .when(F.col("contract_lower").rlike("umowa zlecenie|contract of mandate"), "mandate")
-         # dzieło
+         # specific work contract
          .when(F.col("contract_lower").rlike("umowa o dzieło|contract for specific work"), "contract_work")
-         # staż
+         # internship
          .when(F.col("contract_lower").rlike("staż|internship|apprenticeship"), "internship")
-         # zastępstwo
+         # replacement
          .when(F.col("contract_lower").rlike("zastępstwo|replacement"), "replacement")
-         # tymczasowa / outsourcing
+         # temporary / outsourcing
          .when(F.col("contract_lower").rlike("temporary|staffing|leasing"), "temporary")
          .otherwise("unknown")
     )
@@ -263,7 +263,7 @@ df = (
 
 from pyspark.sql import functions as F
 
-# --- mapowanie regionów EN -> PL ---
+# --- mapping regions EN -> PL ---
 region_map = {
     "masovian": "mazowieckie",
     "lesser poland": "małopolskie",
@@ -286,7 +286,7 @@ cities = [
 ]
 city_regex = "(" + "|".join([c.replace(" ", "\\s+") for c in cities]) + ")"
 
-# --- pełna lista regionów (PL i EN) ---
+# --- full list of regions (PL and EN) ---
 region_words = [
     "mazowieckie","małopolskie","dolnośląskie","śląskie","pomorskie","wielkopolskie","łódzkie",
     "podkarpackie","lubelskie","kujawsko-pomorskie","zachodniopomorskie","świętokrzyskie",
@@ -336,7 +336,7 @@ df = (
 
 from pyspark.sql import functions as F
 
-# --- mapowanie specjalizacji ---
+# --- mapping specializations ---
 spec_map = {
     "backend": "backend",
     "frontend": "frontend",
@@ -379,7 +379,7 @@ spec_map = {
 keys_sql = "(" + ", ".join([f"'{k}'" for k in spec_map.keys()]) + ")"
 values_sql = "(" + ", ".join([f"'{v}'" for v in spec_map.values()]) + ")"
 
-# --- tylko wyznaczenie specialization_general ---
+# --- only determining specialization_general ---
 df = (
     df
     .withColumn("spec_joined", F.when(F.col("specialization").isNotNull(), F.concat_ws(", ", F.col("specialization"))))
@@ -390,7 +390,7 @@ df = (
     .withColumn("spec_clean", F.regexp_replace("spec_clean", r"\s+", " "))
     .withColumn("spec_clean", F.trim("spec_clean"))
     .withColumn("spec_array_raw", F.split("spec_clean", r"\s*,\s*"))
-    # tylko pierwsza wartość mapowania — bez tworzenia array
+    # only the first mapped value — without creating an array
     .withColumn(
         "specialization_general",
         F.element_at(
@@ -410,15 +410,15 @@ df = (
           "salary_raw", "salary_unit_raw", "valid_until_raw", "location")
 )
 
-# --- Dodanie scrap_date ---
+# --- Adding scrap_date ---
 df = df.withColumn("scrap_date", F.lit(TODAY).cast("date"))
 
-# --- Uporządkowanie kolejności kolumn ---
+# --- Reordering columns ---
 cols = ["offer_id"] + [c for c in df.columns if c != "offer_id"]
 
 df = df.select(*cols)
 
-# === 7️⃣ Zapis ===
+# === 7️⃣ Saving ===
 (
     df.write
       .mode("overwrite")
@@ -427,6 +427,6 @@ df = df.select(*cols)
       .save(OUTPUT_PATH)
 )
 
-print("✅ Dane zapisane pomyślnie do GCS:")
+print("✅ Data successfully saved to GCS:")
 print(OUTPUT_PATH)
 spark.stop()

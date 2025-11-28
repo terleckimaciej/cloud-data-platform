@@ -12,7 +12,7 @@ import pyppeteer
 
 
 # === FIXING Chromium ERROR in encountered in Cloud Run ===
-# Usuwamy ograniczenia sandboxa
+# Removing sandbox restrictions
 import pyppeteer
 
 for flag in ["--no-sandbox", "--disable-dev-shm-usage"]:
@@ -83,7 +83,7 @@ async def main():
         try:
             html = await fetch_page(asession, page)
             page_rows = parse_listing_html(html)
-            print(f"✅  Strona {page}: {len(page_rows)} ofert")
+            print(f"✅  Page {page}: {len(page_rows)} offers")
             if not page_rows:
                 break
             all_rows.extend(page_rows)

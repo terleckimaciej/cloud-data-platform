@@ -1,5 +1,5 @@
-# Tu będą trzymane wszystkie outputy z modułów,
-# np. adresy Cloud Run, ID datasetów, URI bucketa
+# Here all outputs from modules will be stored,
+# e.g., Cloud Run addresses, dataset IDs, bucket URI
 
 
 # output "cloud_run_scraper_url" {
