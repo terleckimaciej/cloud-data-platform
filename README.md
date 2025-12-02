@@ -1,4 +1,12 @@
 # **Pracuj.pl IT Job Offers Pipeline**
+![GCP](https://img.shields.io/badge/GCP-Cloud-orange?logo=googlecloud&logoColor=white)
+![Airflow](https://img.shields.io/badge/Airflow-Orchestration-017CEE?logo=apacheairflow&logoColor=white)
+![Docker](https://img.shields.io/badge/Docker-Containerization-0db7ed?logo=docker&logoColor=white)
+![Terraform](https://img.shields.io/badge/Terraform-IaC-7B42BC?logo=terraform&logoColor=white)
+![Spark](https://img.shields.io/badge/Spark-ETL-E25A1C?logo=apachespark&logoColor=white)
+![BigQuery](https://img.shields.io/badge/BigQuery-DW-669DF6?logo=googlebigquery&logoColor=white)
+![Cloud Run](https://img.shields.io/badge/Cloud%20Run-Serverless-4285F4?logo=googlecloud&logoColor=white)
+![Composer](https://img.shields.io/badge/Cloud%20Composer-Airflow-4285F4?logo=googlecloud&logoColor=white)
 
 A fully orchestrated data engineering pipeline on **Google Cloud Platform** using **Docker, Airflow, Dataproc (Spark), BigQuery, Looker Studio, Vertex AI** and **Terraform**.
 
