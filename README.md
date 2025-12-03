@@ -12,20 +12,20 @@ A fully orchestrated data engineering pipeline on **Google Cloud Platform** usin
 
 ---
 
-## 🧭 Description
+## Description
 
 This project builds a complete **end-to-end data platform** that automatically scrapes, processes, and analyzes job listings from **pracuj.pl**. The data are **independently acquired through a custom-built, advanced web scraper** developed from scratch in Python and containerized for Cloud Run execution. The scraper collects raw HTML data, which are then parsed, cleaned, and enriched before being loaded into structured data layers. The cleaned and curated datasets are stored in a **BigQuery Data Warehouse**, which serves as the central analytical layer of the project. From there, data are continuously updated and made available for exploration and visualization through automated Airflow DAGs and the Looker Studio dashboard. 
 
 ---
 
-## 🎯 Objective
+## Objective
 
 The objective of this project was to **apply industry-standard data engineering practices** using the most current open-source and managed frameworks within the GCP ecosystem. 
 It aimed to consolidate the author’s skills through a **real-case scenario implementation**, demonstrate understanding of **serverless design patterns**, **modular IaC with Terraform**, and **pipeline orchestration** with Airflow — all while producing a portfolio project that showcases technical competence to potential employers.
 
 ---
 
-## 🏗️ Architecture
+## Architecture
 
 <img width="1280" height="528" alt="wykres readme flat" src="https://github.com/user-attachments/assets/83bcaa1e-ed76-4e4a-8fa0-8312d7a06f95" />
 
@@ -44,7 +44,7 @@ All steps are orchestrated via **Cloud Composer DAG**, ensuring dependency manag
 
 ---
 
-## 🧩 Dataset
+## Dataset
 
 The dataset contains job postings scraped from pracuj.pl
  — the largest Polish job marketplace, offering a rich and representative view of the IT job market.
@@ -70,14 +70,14 @@ Final outputs are stored in Parquet format in the GCS Data Lake and loaded into 
 
 ---
 
-## 📊 Final Result
+## Final Result
 
 <img width="1280" alt="final_dashboard" src="https://github.com/terleckimaciej/cloud-data-engineering-portfolio-pipeline/blob/main/assets/final_dahsboard.jpg" /> 
 
 
 ---
 
-## 📁 Repository Structure
+## Repository Structure
 
 ```
 pracuj-pl-pipeline/
@@ -109,13 +109,13 @@ pracuj-pl-pipeline/
 
 ---
 
-## 🚀 Setup
+## Setup
 
 ### ⚠️ Costs Warning
 
 Running this pipeline in GCP will incur costs. You can use **$300 free credit** by creating a new GCP account.
 
-### ✅ Pre-requisites
+### Pre-requisites
 
 * GCP account with project access
 * gcloud CLI installed and authenticated
@@ -125,9 +125,9 @@ Running this pipeline in GCP will incur costs. You can use **$300 free credit** 
 
 ---
 
-## 🧱 Deployment Steps
+## Deployment Steps
 
-### 1️⃣ Provision Infrastructure
+### 1. Provision Infrastructure
 
 Use Terraform scripts from `/terraform` to automatically create:
 
@@ -145,14 +145,14 @@ terraform apply
 
 ---
 
-### 2️⃣ Orchestrate with Airflow (Cloud Composer)
+### 2. Orchestrate with Airflow (Cloud Composer)
 
 Upload your DAG (`pracuj_pipeline_dag.py`) to the Composer bucket. Also remember to feed newly created composer environment bucket with load_bq.py script - directory specified in a DAG code (the bucket name is dynamic, so Terraform can't handle this).
 The DAG executes: Scraper → Enricher → Spark Job → BigQuery Load → Dashboard Refresh
 
 ---
 
-### 3️⃣ Analyze in BigQuery & Looker Studio
+### 3. Analyze in BigQuery & Looker Studio
 
 Connect Looker Studio directly to BigQuery and build visualizations.
 
@@ -164,13 +164,13 @@ Example metrics:
 
 ---
 
-### 4️⃣ (Optional) Model with Vertex AI 
+### 4. (Optional) Model with Vertex AI 
 
 Use the curated dataset for training regression models predicting salary ranges or classification models for job type segmentation.
 
 ---
 
-## 🧩 Debug
+## Debug
 
 If you encounter issues:
 
@@ -181,7 +181,7 @@ If you encounter issues:
 
 ---
 
-## 💡 Future Improvements
+## Future Improvements
 
 * Train a Vertex AI model for salary prediction - IN PROGRESS
 * Implement **data quality tests** 
@@ -189,6 +189,6 @@ If you encounter issues:
 
 ---
 
-## 🙏 Acknowledgements
+## Acknowledgements
 
 This project was inspired by **Adi Wijaya’s *****************************************************************************************************************************************************************************************************************Data Engineering with Google Cloud Platform***************************************************************************************************************************************************************************************************************** (2024)** and structured following best practices mentioned in the book and from real GCP portfolio projects.
