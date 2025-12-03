@@ -1,4 +1,4 @@
-# **Pracuj.pl IT Job Offers Pipeline**
+# **JOB OFFERS DATA PIPELINE**
 ![GCP](https://img.shields.io/badge/GCP-Cloud-orange?logo=googlecloud&logoColor=white)
 ![Airflow](https://img.shields.io/badge/Airflow-Orchestration-017CEE?logo=apacheairflow&logoColor=white)
 ![Docker](https://img.shields.io/badge/Docker-Containerization-0db7ed?logo=docker&logoColor=white)
